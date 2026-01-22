@@ -1,0 +1,16 @@
+FULL_NAME,      GROUP|Department, GROUP|Year, YN,  SC|5,            SC|4,      MC|8,                   RT|7
+John Carter,    Engineering,      2,          YES, Coffee,          Morning,   "Music;Movies;Gaming",  6
+Lisa Adams,     Engineering,      2,          YES, Milk,            Morning,   "Music;Reading",        5
+Mark Lee,       Engineering,      3,          NO,  Green Tea,       Evening,   "Sports;Travel",        5
+Sophia Turner,  Design,           3,          YES, Green Tea,       Morning,   "Art;Music",            7
+Daniel Green,   Design,           2,          YES, Sparkling Water, Night,     Gaming,                 6
+Olivia King,    HR,               1,          NO,  Coffee,          Afternoon, "Music;Travel;Fitness", 3
+Ethan Hall,     HR,               1,          YES, Milk,            Evening,   "Gaming;Music;Fitness", 5
+Michael Brown,  Engineering,      1,          YES, Juice,           Morning,   "Music;Movies;Gaming",  6
+Emily Wilson,   Design,           2,          YES, Green Tea,       Afternoon, "Art;Reading",          5
+David Miller,   HR,               3,          NO,  Coffee,          Evening,   "Sports;Fitness",       4
+Anna Roberts,   Engineering,      3,          YES, Juice,           Night,     "Music;Travel",         6
+James Thompson, Design,           1,          YES, Sparkling Water, Morning,   "Art;Gaming;Music",     7
+Natalie White,  HR,               2,          NO,  Coffee,          Afternoon, "Reading;Travel",       3
+Chris Anderson, Engineering,      2,          YES, Coffee,          Evening,   "Movies;Gaming;Music",  5
+Laura Martinez, Design,           3,          YES, Milk,            Morning,   "Art;Music;Reading",    6

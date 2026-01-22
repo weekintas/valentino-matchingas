@@ -1,0 +1,15 @@
+FULL_NAME,       GROUP|Class, GROUP|Grade, GENDER, GENDERS_TO_MATCH_WITH, YN,   SC|3,           SC|5,           MC|5,                                                  RT|10
+Emma Wilson,     10A,         10,          FEMALE, "MALE;FEMALE",         Yep,  Group Study,    Night,          "Homework;Science projects",                           6
+Liam Brown,      10A,         10,          MALE,   FEMALE,                Nope, Group Study,    Late Afternoon, "Essay writing;Homework;Test preparation",             9
+Noah Davis,      11A,         11,          MALE,   "MALE;FEMALE",         Yep,  Mixed Approach, Afternoon,      "Homework;Test preparation;Note taking;Essay writing", 10
+Ava Johnson,     11B,         11,          FEMALE, "MALE;FEMALE",         Yep,  Group Study,    Morning,        Science projects,                                      7
+Mason Clark,     10B,         10,          MALE,   FEMALE,                Nope, Solo Study,     Evening,        "Essay writing;Note taking",                           4
+Sophia Martinez, 9C,          9,           FEMALE, "MALE;FEMALE",         Yep,  Mixed Approach, Afternoon,      "Essay writing;Homework;Science projects",             6
+Ethan Lewis,     9C,          9,           MALE,   FEMALE,                Nope, Solo Study,     Late Afternoon, "Homework;Test preparation",                           2
+Olivia Young,    9A,          9,           FEMALE, MALE,                  Yep,  Group Study,    Night,          "Note taking;Test preparation",                        8
+James Walker,    11B,         11,          MALE,   FEMALE,                Nope, Solo Study,     Evening,        "Homework;Essay writing",                              3
+Isabella Hall,   10C,         10,          FEMALE, "MALE;FEMALE",         Yep,  Mixed Approach, Afternoon,      "Science projects;Note taking;Homework",               8
+Benjamin Allen,  11A,         11,          MALE,   "MALE;FEMALE",         Yep,  Solo Study,     Night,          Homework,                                              6
+Charlotte King,  9B,          9,           FEMALE, MALE,                  Nope, Solo Study,     Late Afternoon, "Essay writing;Note taking",                           9
+Lucas Scott,     11C,         11,          MALE,   "MALE;FEMALE",         Yep,  Mixed Approach, Afternoon,      "Test preparation;Note taking;Essay writing",          2
+Amelia Green,    10A,         10,          FEMALE, "MALE;FEMALE",         Yep,  Group Study,    Morning,        Note taking,                                           9

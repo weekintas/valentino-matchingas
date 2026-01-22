@@ -1,0 +1,7 @@
+FULL_NAME,     GENDER, GENDERS_TO_MATCH_WITH, YN,  SC|3,     MC|4,                RT
+Alice Johnson, FEMALE, MALE;FEMALE,           YES, CHOICE_1, MCHOICE_1;MCHOICE_3, 4
+Bob Smith,     MALE,   FEMALE,                YES, CHOICE_2, MCHOICE_2;MCHOICE_3, 5
+Carol White,   FEMALE, MALE,                  NO,  CHOICE_1, MCHOICE_1;MCHOICE_2, 3
+David Brown,   MALE,   FEMALE;MALE,           YES, CHOICE_3, MCHOICE_3;MCHOICE_4, 4
+Emma Wilson,   FEMALE, FEMALE;MALE,           NO,  CHOICE_2, MCHOICE_2,           2
+Frank Miller,  MALE,   MALE;FEMALE,           YES, CHOICE_1, MCHOICE_1;MCHOICE_4, 5
