@@ -1,7 +1,12 @@
 import argparse
 import sys
 
-from utils.constants import CLI_DEFAULT_MAX_RESULTS_IN_GROUP, CSV_DATA_DEFAULT_DELIMITER, CSV_DATA_DEFAULT_MC_DELIMITER
+from utils.constants import (
+    CLI_DEFAULT_MAX_RESULTS_IN_GROUP,
+    CSV_DATA_DEFAULT_DELIMITER,
+    CSV_DATA_DEFAULT_MC_DELIMITER,
+    DEFAULT_RESULTS_PRECISION,
+)
 
 
 def _type_precision_integer(value):
@@ -49,9 +54,10 @@ def get_parser():
     PARSER.add_argument(
         "formats",
         nargs="+",  # one or more
-        choices=("html", "pdf"),
+        type=str.upper,
+        choices=("PDF", "EMAIL"),
         metavar="FORMAT",
-        help='Output format(s); specify one or both: "html" "pdf"',
+        help='Output format(s); specify one or both: "PDF" "EMAIL"',
     )
 
     PARSER.add_argument(
@@ -76,7 +82,7 @@ def get_parser():
         "-p",
         "--precision",
         type=_type_precision_integer,
-        default=2,
+        default=DEFAULT_RESULTS_PRECISION,
         metavar="NUM",
         help='Number of decimal places to round results to (default: "%(default)s"). Specify -1 to not round at all (not recommended).',
     )

@@ -4,29 +4,41 @@ from collections import defaultdict
 from classes.match import Match, MatchGroup
 from classes.match_table import MatchTable
 from classes.respondent import Respondent
+from classes.result_file_type import ResultFileType
 from matching.get_grouped_matches import (
     get_respondent_matches_of_wanted_genders,
     get_respondent_matches_in_groups,
 )
-from results.generate_result_file import generate_result_file
+from results.pdf_results.generate_result_file import generate_result_file
 from results.result_filepath import get_respondent_result_file_path
 from utils.constants import ALL_PARTICIPANTS_GROUP_TITLE
 
 
-def _normalize_file_type_arg(file_type: str | list[str]) -> list[str]:
-    """Turn file_type into a lowercase list of file types"""
-    if isinstance(file_type, str):
-        return [file_type.lower()]
-    # check if is list and all items in the list are strings
-    elif isinstance(file_type, list) and all(isinstance(ft, str) for ft in file_type):
-        return [ft.lower() for ft in file_type]
+def _normalize_file_type_arg(file_type: ResultFileType | list[ResultFileType]) -> list[ResultFileType]:
+    # """Turn file_type into a lowercase list of file types"""
+    # if isinstance(file_type, str):
+    #     return [file_type.lower()]
+    # # check if is list and all items in the list are strings
+    # elif isinstance(file_type, list) and all(isinstance(ft, str) for ft in file_type):
+    #     return [ft.lower() for ft in file_type]
+    # else:
+    #     raise ValueError(f"Incorrect argument 'file_type' type: {type(file_type)}")
+    if isinstance(file_type, ResultFileType):
+        return [file_type]
+    elif isinstance(file_type, list) and all(isinstance(ft, ResultFileType) for ft in file_type):
+        return [ft for ft in file_type]
     else:
         raise ValueError(f"Incorrect argument 'file_type' type: {type(file_type)}")
 
 
 def _get_group_title_for_display(group: MatchGroup | None):
     if group:
-        return f'Among those in {group.name.lower()} "{group.value}"'
+        # return f'Among those in {group.name.lower()} "{group.value}"'
+        # return f"{group.value} {group.name}"
+        if group.title:
+            return group.title.replace(r"{VALUE}", group.value)
+        else:
+            return f'Tarp tų, kurių {group.name.lower()} "{group.value}"'
 
     # if `group` is `None`, then return the default name for the whole respondent pool
     return ALL_PARTICIPANTS_GROUP_TITLE
@@ -48,8 +60,12 @@ def _build_match_groups_for_display_data(
         # if no matches in one group, we do not display it at all
         if len(matches) == 0:
             continue
+
         # if max amount of matches specified, limit the amount
-        if max_num_of_results_in_group:
+        # one specified in the MatchGroupParams takes precendance over max_num_of_results_in_group
+        if match_group and match_group.num_result_to_show:
+            matches = matches[: match_group.num_result_to_show]
+        elif max_num_of_results_in_group:
             matches = matches[:max_num_of_results_in_group]
 
         group_title = _get_group_title_for_display(match_group)
@@ -79,7 +95,9 @@ def _format_compatibilities_for_display(
                 compatibility = str(compatibility)
             else:
                 compatibility = f"{compatibility:.{precision}f}"
-            formatted_group_matches[g_name].append({"name": name, "compatibility": compatibility})
+            formatted_group_matches[g_name].append(
+                {"name": name, "compatibility": compatibility, "description": "Pajūrio Stanislovo Biržiškio gimnazija"}
+            )  # TODO
 
     return formatted_group_matches
 
@@ -108,7 +126,7 @@ def _prepare_match_groups_for_respondent(
 def generate_result_files(
     match_table: MatchTable,
     respondent_dict: dict[int, Respondent],
-    file_type: str | list[str],
+    file_type: ResultFileType | list[ResultFileType],
     precision: int | None,
     max_num_of_results_in_group: int | None,
     output_dir: str = f"_output/result_files/",
@@ -118,7 +136,7 @@ def generate_result_files(
 ) -> None:
     """
     Parameters:
-        file_type (str): either `"html"` or `"pdf"`, or both in a list: `["html", "pdf"]`
+        file_type (str): either `ResultFileType.PDF` or `ResultFileType.EMAIL`, or both in a list
         file_exists_behaviour (str): what to do when file already exists: `"override"`, `"ask"` or `"skip"`
         verbose (bool): should print messages when generating
     """
@@ -137,7 +155,9 @@ def generate_result_files(
 
         for f_type in file_types:
             # f_type (type of file) is always the same as the extension
-            filepath = get_respondent_result_file_path(respondent, output_dir, f_type, separate_into_group_dirs)
+            filepath = get_respondent_result_file_path(
+                respondent, output_dir, f_type.get_result_file_extension(), separate_into_group_dirs
+            )
 
             was_file_generated = generate_result_file(
                 respondent,

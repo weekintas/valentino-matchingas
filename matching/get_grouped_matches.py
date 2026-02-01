@@ -25,16 +25,17 @@ def get_respondent_matches_in_groups(
     """Returns a list of MatchGroup objects, where in each group there is a maximum of `match_amount_per_group` amount of top matches."""
     # init empty list of MatchGroups
     matches_in_groups: dict[MatchGroup, list[Match]] = {
-        MatchGroup(group_name, group_val): [] for group_name, group_val in respondent.groups.items()
+        MatchGroup.from_match_group_params(group_params, group_val): []
+        for group_params, group_val in respondent.groups.items()
     }
 
     for candidate_match in matches:
         # check if the respondent and the match belong to any shared groups together - if so, add the match to all
         # such groups (the group name and value both have to be equal)
         candidate_respondent = respondent_dict[candidate_match.respondent_id]
-        for group_name, group_value in respondent.groups.items():
-            if candidate_respondent.groups.get(group_name) == group_value:
-                matches_in_groups[MatchGroup(group_name, group_value)].append(
+        for group_params, group_value in respondent.groups.items():
+            if candidate_respondent.groups.get(group_params) == group_value:
+                matches_in_groups[MatchGroup.from_match_group_params(group_params, group_value)].append(
                     Match(candidate_respondent.id, candidate_match.compatibility)
                 )
 

@@ -3,7 +3,8 @@ from typing import Any
 import pdfkit
 
 from classes.respondent import Respondent
-from results.generate_html_content import get_result_file_html_content
+from classes.result_file_type import ResultFileType
+from results.pdf_results.generate_html_content import get_result_file_html_content
 from utils.filesystem import make_parent_dirs_for_file, get_file_extension
 
 
@@ -23,7 +24,7 @@ _PDFKIT_OPTIONS = {
     "encoding": "UTF-8",
     "margin-top": "1cm",
     "margin-right": "1cm",
-    "margin-bottom": "1.5cm",
+    "margin-bottom": "1cm",
     "margin-left": "1cm",
 }
 
@@ -44,7 +45,7 @@ def generate_result_file(
     match_groups: dict[str, list[dict[str, Any]]],
     top_match: tuple[str, Any],
     result_file_path: str,
-    file_type: str | None = None,
+    file_type: ResultFileType,
     file_exists_behaviour: str = "ask",
     print_generating_message: bool = True,
     print_generated_message: bool = True,
@@ -59,15 +60,17 @@ def generate_result_file(
         str | None: filepath of the file generated, if not generated - `None`
     """
     # validate file_type and get it from file path if neeeded
-    file_type = file_type or get_file_extension(result_file_path)
-    if file_type not in ("html", "pdf"):
-        raise ValueError(f"Incorrect file_type or result_file_path: {file_type}, {result_file_path}")
+    # file_type = file_type or get_file_extension(result_file_path)
+    # if file_type not in ("html", "pdf"):
+    #     raise ValueError(f"Incorrect file_type or result_file_path: {file_type}, {result_file_path}")
 
     if print_generating_message:
         print(f"Generating {file_type} results file: {result_file_path}")
 
     # get html content of file
-    result_file_html_content = get_result_file_html_content(respondent, match_groups, top_match)
+    result_file_html_content = get_result_file_html_content(
+        file_type, respondent, match_groups, top_match, file_type.get_result_file_path()
+    )
 
     # generate file path and if file already exists, then ask what to do
     should_create_file = make_parent_dirs_for_file(result_file_path, file_exists_behaviour)
@@ -75,10 +78,13 @@ def generate_result_file(
         return None
 
     # generate file based on its type
-    if file_type == "html":
+    result_file_extension = file_type.get_result_file_extension().lower()
+    if result_file_extension == "html":
         was_file_generated = _generate_html_result_file(result_file_path, result_file_html_content)
-    else:
+    elif result_file_extension == "pdf":
         was_file_generated = _generate_pdf_result_file(result_file_path, result_file_html_content)
+    else:
+        raise ValueError(f"Invalid file_type result file extension: {result_file_extension}")
 
     if print_generated_message and was_file_generated:
         print(f"Generated {file_type} results file: {result_file_path}")

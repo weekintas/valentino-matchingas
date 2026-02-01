@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
 from classes.gender import Gender
+from classes.match import MatchGroupParams
 
 
 @dataclass(frozen=True)
@@ -14,7 +15,7 @@ class Respondent:
 
     id: int
     full_name: str
-    groups: dict[str, str]
+    groups: dict[MatchGroupParams, str]
     gender: Gender
     match_genders: list[Gender]
     responses: dict[int, int | str | set]

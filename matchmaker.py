@@ -1,8 +1,9 @@
 import sys
 
+from classes.result_file_type import ResultFileType
 from csv_io.read_csv import read_data_from_csv
 from matching.match_all import match_all_respondents
-from results.generate_all import generate_result_files
+from results.pdf_results.generate_all import generate_result_files
 from utils.cli import get_parser
 
 
@@ -51,7 +52,7 @@ def main():
         generate_result_files(
             match_table,
             respondent_dict,
-            args.formats,
+            [ResultFileType.from_string(f_type) for f_type in args.formats],
             precision=args.precision,
             max_num_of_results_in_group=args.max_results_in_group,
             output_dir=args.output_dir,

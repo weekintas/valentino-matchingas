@@ -1,0 +1,119 @@
+{% from 'email/valentine/single_match_row.html' import single_match_row %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+      .top-match {
+        background-color: #ffd1dc;
+        font-weight: bold;
+      }
+
+      @media screen and (min-width: 701px) {
+        .outer-wrapper {
+          background-color: #FFC8D5 !important;
+        }
+        .outer-td {
+          padding-top: 20px !important;
+          padding-bottom: 20px !important;
+        }
+      }
+    </style>
+  </head>
+  <body style="margin:0; padding:0; font-family:Arial, sans-serif; color:#333; line-height:1.6;">
+    <!-- Outer wrapper for background when widht is > 700px-->
+    <table width="100%" cellpadding="0" cellspacing="0" border="0" style="margin:0; padding:0; background-color:transparent;" class="outer-wrapper">
+      <tr><td align="center" style="margin:0;" class="outer-td">
+        <!-- Inner container -->
+        <table width="700" cellpadding="0" cellspacing="0" border="0" bgcolor="#ffffff" style="width:100%; max-width:700px; margin:0 auto; padding:0; background-color:#ffffff; border-radius:8px;">
+          <tr><td style="padding:0; margin:0;">
+
+            <!-- Header -->
+            <table width="100%" cellpadding="20" cellspacing="0" border="0" bgcolor="#d6336c" style="border-radius:8px;">
+              <tr><td align="center">
+                <!-- First line -->
+                <table cellpadding="0" cellspacing="0" border="0" style="padding-top:3px;padding-bottom:12px;">
+                  <tr><td align="center" style="font-size:22px; line-height:28px; font-weight:bold; color:#ffffff;" class="header-title">
+                    💌 Tavo Valentino rezultatai jau čia! 💌
+                  </td></tr>
+                </table>
+                <!-- Second line -->
+                <table cellpadding="0" cellspacing="0" border="0">
+                  <tr><td align="center" style="font-size:14px; line-height:16px; font-weight:bold; color:#ffffff;" class="header-description">
+                    Atrask savo geriausius match'us jau dabar!
+                  </td></tr>
+                </table>
+              </td></tr>
+            </table>
+
+            <!-- Greeting -->
+            <table width="100%" cellpadding="0" cellspacing="0" border="0">
+              <tr><td align="center" style="padding-top:30px;padding-right:15px;padding-bottom:10px;padding-left:15px; font-size:18px; color:#444444; line-height:22px;">
+                {{ greeting }}, <strong style="font-weight:bold;">{{ full_name }}</strong>{{ additional_content_after_recipient_full_name | safe }}!
+              </td></tr>
+            </table>
+
+            <!-- Description -->
+            <table width="100%" cellpadding="0" cellspacing="0" border="0">
+              <tr><td align="center" style="padding-top:0;padding-right:20px;padding-bottom:30px;padding-left:20px; font-size:16px; color:#444444; line-height:20px;">
+                Išanalizavome tavo rezultatus ir pristatome, su kuo labiausiai match'ini:
+              </td></tr>
+            </table>
+
+            <!-- Top match highlight -->
+            <table width="100%" cellpadding="0" cellspacing="0" border="0" style="padding:0 20px 20px 20px;">
+              <tr><td align="center">
+                <table width="100%" cellpadding="15" cellspacing="0" border="0" bgcolor="#ffe6eb" style="border:2px solid #d6336c; border-radius:6px;">
+                  <tr><td align="center">
+                    <div style="font-size:18px; font-weight:bold; color:#c90e50; line-height:24px;">
+                      Top match'as: <strong style="font-weight:bold;">{{ top_match_name }}</strong>
+                    </div>
+                    <div style="font-size:16px; color:#444444; font-weight:normal; line-height:22px; padding-top:4px;">
+                      Suderinamumas: <strong style="font-weight:bold;">{{ top_match_compatibility }}%</strong>
+                    </div>
+                  </td></tr>
+                </table>
+              </td></tr>
+            </table>
+            
+            <!-- MATCH GROUPS -->
+            {% for match_group in match_groups %}
+              <table width="100%" cellpadding="0" cellspacing="5" border="0" style="padding:0 16px 16px 16px;">
+                <tr><td style="padding-bottom:2px;">
+                  <h2 style="font-size:18px; margin:0; color:#d6336c; border-bottom:2px solid #ffe6eb; padding-bottom:4px; line-height:1.25;">
+                    {{ match_group }}:
+                  </h2>
+                </td></tr>
+
+                {% for match in match_groups[match_group] %}
+                  <!-- If this is the first match in the match_group, it is the top match -->
+                  {% if loop.first %}
+                    {{ single_match_row(match.name, match.compatibility, match.description, is_top_match=true) }}
+                    {% continue %}
+                  {% endif %}
+                  
+                  {{ single_match_row(match.name, match.compatibility, match.description) }}
+                {% endfor %}
+              </table>
+            {% endfor %}
+
+            <!-- Footer -->
+            {% if footer_content %}
+              <table width="100%" cellpadding="0" cellspacing="0" border="0" style="padding-top:20px;">
+                <tr><td align="center">
+                  <table width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#f7f7f7" style="border-radius:8px;">
+                    <tr><td align="center" style="padding:10px; font-size:12px; color:#888888; line-height:16px;">
+                      {{ footer_content | safe }}
+                    </td></tr>
+                  </table>
+                </td></tr>
+              </table>
+            {% endif %}
+
+          </td></tr>
+        </table>
+      </td></tr>
+    </table>
+  </body>
+</html>

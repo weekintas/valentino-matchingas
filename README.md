@@ -105,6 +105,8 @@ Here are some example prompts:
  4. `matchmaker.py input.csv pdf --delimiter ";" --multi-delimiter ","` - generates pdf result files where each cell is delimited by char `;` and multiple options in a single cell are delimited using `,`
  5. `matchmaker.py input.csv pdf -s --on-file-exists skip` - generate pdf result files, and put them in separate folders by which group(s) the respondents belong to. Also, if any of the files already exist, skip the generation of those ones.
 
+If you decide to use venv for external packages, make sure to run `source .venv/bin/activate` before using the program.
+
 > NOTE: pdf file generation, especially if generating many files, takes quite a lot of time. In case that the program got interrupted and stopped during pdf file generation, rerun the prompt with the flag `--on-file-exists` set to `override`, as it will skip the generation of already generated files, and "continue where it left off".
 
 ## Design choices
@@ -114,4 +116,4 @@ Here are some example prompts:
  - **Flexible design** - implementing new question types or headings for csv data file will be a simple process requiring minimal changes
 
 
-### This is Weekintas (Vykintas Mylimas) from CS50x
+### This is Weekintas (Vykintas Mylimas)

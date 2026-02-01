@@ -30,10 +30,25 @@ PARAM_INDEX_NUM_OPTIONS: int = 0
 #####################
 
 CLI_DEFAULT_MAX_RESULTS_IN_GROUP: int = 5
+DEFAULT_RESULTS_PRECISION: int = 0
 
 
 ###################################
 #   RESULT GENERATING CONSTANTS   #
 ###################################
 
-ALL_PARTICIPANTS_GROUP_TITLE = "Among all participants"
+# ALL_PARTICIPANTS_GROUP_TITLE = "Tarp visų dalyvių"
+ALL_PARTICIPANTS_GROUP_TITLE = "Tarp visų Šilalės rajono mokyklų"
+PDF_RESULTS_TEMPLATE_RELATIVE_PATH = "pdf_results/valentine/valentine_pink_pdf.html"
+EMAIL_TEMPLATE_RELATIVE_PATH = "email/valentine/valentine_pink_email.html"
+
+
+#####################
+#   EMAIL SENDING   #
+#####################
+
+ZEPTOMAIL_SERVICE_EMAIL = "https://api.zeptomail.eu/v1.1/email"
+ZEPTOMAIL_REQUEST_METHOD = "POST"
+ZEPTOMAIL_HEADER_ACCEPT = "application/json"
+ZEPTOMAIL_HEADER_CONTENT_TYPE = "application/json"
+DEFAULT_RESULTS_EMAIL_SUBJECT = "Tavo Valentino rezultatai jau čia!"

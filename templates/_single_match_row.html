@@ -1,6 +1,0 @@
-{% macro single_match_row(match_name, match_compatibility, is_top_match=false) -%}
-    <li class="single-match-row {{ 'top-match' if is_top_match }}">
-        <div class="name">{{ match_name }}</div>
-        <div class="percentage">{{ match_compatibility }}%</div>
-    </li>
-{%- endmacro %}
