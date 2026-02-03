@@ -2,10 +2,10 @@ import csv
 from dataclasses import dataclass
 
 from classes.gender import Gender
-from classes.match import MatchGroupParams
 from classes.question_data import QuestionData, QuestionType
 from classes.respondent import Respondent
 from utils.constants import (
+    ALL_MATCHES_GROUP_CODE,
     CSV_DATA_PARAMETER_DELIMITER,
     PARAM_INDEX_NUM_OPTIONS,
     HEADER_GROUP_PREFIX,
@@ -13,24 +13,24 @@ from utils.constants import (
 from utils.filesystem import file_exists
 
 
-def _get_group_indexes_from_csv_header(header: list[str]):
-    # all of the indexes of group columns and the names + titles of the groups (values)
-    group_columns: dict[int, MatchGroupParams] = {}
+def _get_group_indexes_from_csv_header(header: list[str]) -> dict[int, str]:
+    # all of the indexes of group columns and their codes (codes of the groups)
+    group_columns: dict[int, str] = {}
     for header_i, heading in enumerate(header):
         # if heading is not a group, continue
         if not heading.startswith(HEADER_GROUP_PREFIX):
             continue
 
-        # heading is a GROUP, check if it has a name provided
+        # heading is a GROUP, check if it has a code provided
         group_data = heading.split(CSV_DATA_PARAMETER_DELIMITER)
         if len(group_data) == 1:
-            raise ValueError(f"Group heading found but the name of it is not specified (at index {header_i})")
+            raise ValueError(f"Group heading found but the code of it is not specified (at index {header_i})")
 
         # group title is also specified if 3 items in total
         group_title = group_data[2] if len(group_data) >= 3 else None
         group_results_to_show = int(group_data[3]) if len(group_data) >= 4 else None
 
-        group_columns[header_i] = MatchGroupParams(group_data[1], group_title, group_results_to_show)
+        group_columns[header_i] = group_data[1]
 
     return group_columns
 
@@ -83,7 +83,7 @@ class _HeaderIndexes:
     full_name: int
     gender: int | None
     gender_to_match_with: int | None
-    match_groups: dict[int, MatchGroupParams]
+    match_groups: dict[int, str]
     question_data_columns: dict[int, QuestionData]
 
 
@@ -108,12 +108,12 @@ def _process_respondent_csv_data_header(header: list[str]):
         genders_to_match_with_i = None
 
     # get any GROUP headings (the heading's format is "GROUP|XXX")
-    match_groups_i = _get_group_indexes_from_csv_header(header)
+    group_codes_i = _get_group_indexes_from_csv_header(header)
 
     # get the question data
     questions_data_i = _get_question_data_from_csv_header(header)
 
-    return _HeaderIndexes(full_name_i, gender_i, genders_to_match_with_i, match_groups_i, questions_data_i)
+    return _HeaderIndexes(full_name_i, gender_i, genders_to_match_with_i, group_codes_i, questions_data_i)
 
 
 def _get_respondent_from_row(row: list[str], row_i: int, h_indexes: _HeaderIndexes, multi_delimiter: str):
@@ -132,8 +132,8 @@ def _get_respondent_from_row(row: list[str], row_i: int, h_indexes: _HeaderIndex
 
         # groups
         groups: dict[str, str] = {}
-        for group_i, group_params in h_indexes.match_groups.items():
-            groups[group_params] = row[group_i]
+        for group_i, match_group in h_indexes.match_groups.items():
+            groups[match_group] = row[group_i]
 
         # responses to questions
         responses = {}
@@ -162,7 +162,7 @@ def _get_respondent_from_row(row: list[str], row_i: int, h_indexes: _HeaderIndex
 
 def read_data_from_csv(
     file_name: str, delimiter: str, multi_delimiter: str, verbose: bool = True
-) -> tuple[list[QuestionData], dict[int, Respondent]]:
+) -> tuple[list[str], list[QuestionData], list[Respondent]]:
     """
     Returns a tuple with two items:
         `list[QuestionData]`: a list with all questions' data
@@ -176,20 +176,25 @@ def read_data_from_csv(
         raise FileNotFoundError(f"The csv input file {file_name} does not exist")
 
     questions_data: list[QuestionData] = []
-    respondent_dict: dict[int, Respondent] = {}
+    all_respondents: list[Respondent] = []
 
     with open(file_name, "r", encoding="UTF-8", newline="") as file:
         csv_reader = csv.reader(file, delimiter=delimiter, skipinitialspace=True, quoting=csv.QUOTE_ALL)
         # get all of the info from the header
         header = next(csv_reader)
         h_indexes = _process_respondent_csv_data_header(header)  # indexes where particular data is in the header
+        group_codes = list(h_indexes.match_groups.values())
         questions_data = list(h_indexes.question_data_columns.values())
         # process each respondent and use row index as the respondent's id
         for row_i, row in enumerate(csv_reader):
             respondent = _get_respondent_from_row(row, row_i, h_indexes, multi_delimiter)
-            respondent_dict[row_i] = respondent
+            all_respondents.append(respondent)
+
+    # inject all_matches_group_data to be a group for all respondents
+    for respondent in all_respondents:
+        respondent.groups[ALL_MATCHES_GROUP_CODE] = ALL_MATCHES_GROUP_CODE
 
     if verbose:
-        print(f"Successfully read data of {len(questions_data)} questions and {len(respondent_dict)} respondents!\n")
+        print(f"Successfully read data of {len(questions_data)} questions and {len(all_respondents)} respondents!\n")
 
-    return questions_data, respondent_dict
+    return group_codes, questions_data, all_respondents

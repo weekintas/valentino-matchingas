@@ -2,9 +2,11 @@ from typing import Any
 
 import pdfkit
 
+from classes.matchmaking_config import MatchmakingConfig
 from classes.respondent import Respondent
 from classes.result_file_type import ResultFileType
-from results.pdf_results.generate_html_content import get_result_file_html_content
+from results.class_match_group_results import MatchGroupResults, MatchResult
+from results.generate_html_content import get_result_file_html_content
 from utils.filesystem import make_parent_dirs_for_file, get_file_extension
 
 
@@ -42,11 +44,11 @@ def _generate_pdf_result_file(result_file_path: str, file_html_content: str) -> 
 
 def generate_result_file(
     respondent: Respondent,
-    match_groups: dict[str, list[dict[str, Any]]],
-    top_match: tuple[str, Any],
+    match_groups: list[MatchGroupResults],
+    top_match: MatchResult,
     result_file_path: str,
     file_type: ResultFileType,
-    file_exists_behaviour: str = "ask",
+    config: MatchmakingConfig,
     print_generating_message: bool = True,
     print_generated_message: bool = True,
 ) -> str | None:
@@ -59,21 +61,17 @@ def generate_result_file(
     Returns:
         str | None: filepath of the file generated, if not generated - `None`
     """
-    # validate file_type and get it from file path if neeeded
-    # file_type = file_type or get_file_extension(result_file_path)
-    # if file_type not in ("html", "pdf"):
-    #     raise ValueError(f"Incorrect file_type or result_file_path: {file_type}, {result_file_path}")
 
     if print_generating_message:
         print(f"Generating {file_type} results file: {result_file_path}")
 
     # get html content of file
     result_file_html_content = get_result_file_html_content(
-        file_type, respondent, match_groups, top_match, file_type.get_result_file_path()
+        file_type, respondent, match_groups, top_match, config, file_type.get_result_file_path()
     )
 
     # generate file path and if file already exists, then ask what to do
-    should_create_file = make_parent_dirs_for_file(result_file_path, file_exists_behaviour)
+    should_create_file = make_parent_dirs_for_file(result_file_path, config.on_result_file_exists_behaviour)
     if not should_create_file:
         return None
 

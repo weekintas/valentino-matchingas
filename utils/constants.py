@@ -25,6 +25,13 @@ PARAM_INDEX_NUM_OPTIONS: int = 0
 # NOTE: genders must be specified according to the classes/gender.py Gender.from_string method
 
 
+####################################
+#   PYTHON CONFIG FILE CONSTANTS   #
+####################################
+
+ALL_MATCHES_GROUP_CODE = "__ALL__"
+
+
 #####################
 #   CLI CONSTANTS   #
 #####################
@@ -37,8 +44,7 @@ DEFAULT_RESULTS_PRECISION: int = 0
 #   RESULT GENERATING CONSTANTS   #
 ###################################
 
-# ALL_PARTICIPANTS_GROUP_TITLE = "Tarp visų dalyvių"
-ALL_PARTICIPANTS_GROUP_TITLE = "Tarp visų Šilalės rajono mokyklų"
+ALL_PARTICIPANTS_GROUP_TITLE = "Tarp visų dalyvių"
 PDF_RESULTS_TEMPLATE_RELATIVE_PATH = "pdf_results/valentine/valentine_pink_pdf.html"
 EMAIL_TEMPLATE_RELATIVE_PATH = "email/valentine/valentine_pink_email.html"
 

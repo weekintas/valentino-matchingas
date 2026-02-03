@@ -23,17 +23,19 @@
         <table width="100%" cellpadding="20" cellspacing="0" border="0" bgcolor="#d6336c" style="border-radius:8px;">
           <tr><td align="center">
             <!-- First line -->
-            <table cellpadding="0" cellspacing="0" border="0" style="padding-top:3px;padding-bottom:12px;">
+            <table cellpadding="0" cellspacing="0" border="0" style="padding-top:3px;">
               <tr><td align="center" style="font-size:26px; line-height:34px; font-weight:bold; color:#ffffff;" class="header-title">
                 {{ full_name }} Valentino rezultatai
               </td></tr>
             </table>
             <!-- Second line -->
-            <table cellpadding="0" cellspacing="0" border="0">
+            {% if description %}
+            <table cellpadding="0" cellspacing="0" border="0" style="padding-top:12px;">
               <tr><td align="center" style="font-size:18px; line-height:24px; font-weight:bold; color:#ffffff;" class="header-description">
                 {{ description }}
               </td></tr>
             </table>
+            {% endif %}
           </td></tr>
         </table>
 
@@ -43,10 +45,10 @@
             <table width="100%" cellpadding="15" cellspacing="0" border="0" bgcolor="#ffe6eb" style="border:2px solid #d6336c; border-radius:6px;">
               <tr><td align="center">
                 <div style="font-size:22px; font-weight:bold; color:#c90e50; line-height:32px;">
-                  Top match'as: <strong style="font-weight:bold;">{{ top_match_name }}</strong>
+                  Top match'as: <strong style="font-weight:bold;">{{ top_match.full_name }}</strong>
                 </div>
                 <div style="font-size:20px; color:#444444; font-weight:normal; line-height:28px; padding-top:4px;">
-                  Suderinamumas: <strong style="font-weight:bold;">{{ top_match_compatibility }}%</strong>
+                  Suderinamumas: <strong style="font-weight:bold;">{{ top_match.compatibility }}%</strong>
                 </div>
               </td></tr>
             </table>
@@ -57,15 +59,15 @@
           <table width="100%" cellpadding="0" cellspacing="5" border="0" style="padding:0 16px 16px 16px;">
             <tr><td style="padding-bottom:2px;">
               <h2 style="font-size:21px; margin:0; color:#d6336c; border-bottom:2px solid #ffe6eb; padding-bottom:4px; line-height:1.25;">
-                {{ match_group }}:
+                {{ match_group.title }}
               </h2>
             </td></tr>
 
-            {% for match in match_groups[match_group] %}
+            {% for result in match_group.results %}
               <!-- If this is the first match in the match_group, display them full-width (since it is the top match in that group) -->
               {% if loop.first %}
                 <tr><td>
-                  {{ single_match_row(match.name, match.compatibility, match.description, is_top_match=true) }}
+                  {{ single_match_row(result.full_name, result.description, result.compatibility, is_top_match=true) }}
                 </td></tr>
                 {% continue %}
               {% endif %}
@@ -78,17 +80,17 @@
               <!-- if this is the last match in group, do as 1, otherwise make them both in 1 row -->
               {% if loop.last %}
                 <tr><td>
-                  {{ single_match_row(match.name, match.compatibility, match.description) }}
+                  {{ single_match_row(result.full_name, result.description, result.compatibility) }}
                 </td></tr>
               {% else %}
                 <tr><td>
                   <table width="100%" cellpadding="0" cellspacing="0" border="0">
                     <tr>
                       <td style="width:50%; padding-right:2.5px;">
-                        {{ single_match_row(match.name, match.compatibility, match.description) }}
+                        {{ single_match_row(result.full_name, result.description, result.compatibility) }}
                       </td>
                       <td style="width:50%; padding-left:2.5px;">
-                        {{ single_match_row(loop.nextitem.name, loop.nextitem.compatibility, loop.nextitem.description) }}
+                        {{ single_match_row(loop.nextitem.full_name, loop.nextitem.description, loop.nextitem.compatibility) }}
                       </td>
                     </tr>
                   </table>

@@ -1,19 +1,22 @@
 import sys
 
+from classes.matchmaking_config import MatchmakingConfig
 from classes.result_file_type import ResultFileType
-from csv_io.read_csv import read_data_from_csv
+from program_input_handling.process_py_config_file import process_py_config_file
+from program_input_handling.read_csv_input_data import read_data_from_csv
 from matching.match_all import match_all_respondents
-from results.pdf_results.generate_all import generate_result_files
+from results.generate_all import generate_result_files
 from utils.cli import get_parser
 
 
 def main():
     # init args for easy use
     args = get_parser().parse_args()
+    cli_program_config = MatchmakingConfig.from_argparse_args(args)
 
     # read csv data
     try:
-        questions_data, respondent_dict = read_data_from_csv(
+        group_codes, questions_data, all_respondents = read_data_from_csv(
             args.in_file, delimiter=args.delimiter, multi_delimiter=args.multi_delimiter, verbose=True
         )
     except Exception as e:
@@ -32,9 +35,22 @@ def main():
         )
         sys.exit(1)
 
+    # process config file if given
+    try:
+        program_config, match_groups = process_py_config_file(args.config_path, cli_program_config, group_codes)
+    except Exception as e:
+        print(
+            "----------------------------------------------------------------\n"
+            "AN ERROR OCCURRED WHILE READING DATA FROM THE PYTHON CONFIG FILE\n"
+            "----------------------------------------------------------------\n"
+            f"Error: {e}\n",
+            file=sys.stderr,
+        )
+        sys.exit(1)
+
     # match respondents
     try:
-        match_table = match_all_respondents(list(respondent_dict.values()), questions_data)
+        match_table = match_all_respondents(all_respondents, questions_data)
     except Exception as e:
         print(
             "--------------------------------------------\n"
@@ -50,14 +66,11 @@ def main():
     # generate result files based on file types selected
     try:
         generate_result_files(
+            match_groups,
+            all_respondents,
             match_table,
-            respondent_dict,
             [ResultFileType.from_string(f_type) for f_type in args.formats],
-            precision=args.precision,
-            max_num_of_results_in_group=args.max_results_in_group,
-            output_dir=args.output_dir,
-            separate_into_group_dirs=args.separate_by_groups,
-            file_exists_behaviour=args.on_file_exists,
+            config=program_config,
             verbose=True,
         )
     except Exception as e:

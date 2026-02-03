@@ -1,8 +1,8 @@
-from typing import Any
-
+from classes.matchmaking_config import MatchmakingConfig
 from classes.respondent import Respondent
 from classes.gender import Gender
 from classes.result_file_type import ResultFileType
+from results.class_match_group_results import MatchGroupResults, MatchResult
 from utils.jinja import JINJA_ENV
 from utils.string import fullname_to_lithuanian_genitive_case, fullname_to_lithuanian_vocative_case
 
@@ -20,8 +20,9 @@ def get_LT_greeting(gender: Gender):
 def get_result_file_html_content(
     file_type: ResultFileType,
     respondent: Respondent,
-    match_groups: dict[str, list[dict[str, Any]]],
-    top_match: tuple[str, Any],
+    match_groups: list[MatchGroupResults],
+    top_match: MatchResult,
+    config: MatchmakingConfig,
     relative_template_path: str,
 ) -> str:
     """
@@ -36,25 +37,12 @@ def get_result_file_html_content(
             if file_type == ResultFileType.EMAIL
             else fullname_to_lithuanian_genitive_case(respondent.full_name)
         ),
-        top_match_name=top_match[0],
-        top_match_compatibility=top_match[1],
+        top_match=top_match,
         match_groups=match_groups,
         greeting=get_LT_greeting(respondent.gender),
-        description="Šilalės rajono gimnazijos 2026!",  # only for PDF
-        # additional_content_after_recipient_full_name=" iš <strong>2b</strong>",
+        description=config.pdf_result_file_header_description,
         footer_content=(
-            """
-            <div style="font-weight:bold; margin:0; padding:0;">
-              Su ❤️ Vykintas Mylimas kartu su Airida Paulauskaite
-            </div>
-            <div style="margin-top:4px; font-size:12px; line-height:16px;">
-              Iškilus klausimams susisiekite <a href="mailto:info@weekintas.lt" style="color:#d6336c;">info@weekintas.lt</a>
-            </div>"""
-            if file_type == ResultFileType.EMAIL
-            else """
-            <div style="font-weight:bold; margin:0; padding:0;">
-              Su ❤️ Vykintas Mylimas kartu su Airida Paulauskaite
-            </div>"""
+            config.footer_content_email if file_type == ResultFileType.EMAIL else config.footer_content_pdf
         ),
     )
 

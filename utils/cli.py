@@ -61,6 +61,14 @@ def get_parser():
     )
 
     PARSER.add_argument(
+        "-c",
+        "--config-path",
+        default=None,
+        metavar="CONFIG_PATH",
+        help="Path to a python config file",
+    )
+
+    PARSER.add_argument(
         "--delimiter",
         default=CSV_DATA_DEFAULT_DELIMITER,
         metavar="CHAR",
