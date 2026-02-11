@@ -2,8 +2,8 @@ from pathlib import Path
 import importlib.util as implib
 from types import ModuleType
 
-from classes.match_group import MatchGroup
-from classes.matchmaking_config import MatchmakingConfig
+from utils.classes.match_group import MatchGroup
+from utils.classes.matchmaking_config import MatchmakingConfig
 from utils.constants import ALL_MATCHES_GROUP_CODE
 
 

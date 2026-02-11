@@ -1,9 +1,9 @@
 import csv
 from dataclasses import dataclass
 
-from classes.gender import Gender
-from classes.question_data import QuestionData, QuestionType
-from classes.respondent import Respondent
+from utils.classes.gender import Gender
+from utils.classes.question_data import QuestionData, QuestionType
+from utils.classes.respondent import Respondent
 from utils.constants import (
     ALL_MATCHES_GROUP_CODE,
     CSV_DATA_PARAMETER_DELIMITER,
@@ -25,10 +25,6 @@ def _get_group_indexes_from_csv_header(header: list[str]) -> dict[int, str]:
         group_data = heading.split(CSV_DATA_PARAMETER_DELIMITER)
         if len(group_data) == 1:
             raise ValueError(f"Group heading found but the code of it is not specified (at index {header_i})")
-
-        # group title is also specified if 3 items in total
-        group_title = group_data[2] if len(group_data) >= 3 else None
-        group_results_to_show = int(group_data[3]) if len(group_data) >= 4 else None
 
         group_columns[header_i] = group_data[1]
 
@@ -81,6 +77,7 @@ def _get_question_data_from_csv_header(header: list[str]):
 @dataclass(frozen=True)
 class _HeaderIndexes:
     full_name: int
+    email: int | None
     gender: int | None
     gender_to_match_with: int | None
     match_groups: dict[int, str]
@@ -99,6 +96,11 @@ def _process_respondent_csv_data_header(header: list[str]):
             "'FULL_NAME' must be specified in the header of the csv file containing data of the respondents"
         )
 
+    try:
+        email_i = header.index("EMAIL")
+    except ValueError:
+        email_i = None
+
     # get optional GENDER and GENDERS_TO_MATCH_WITH
     try:
         gender_i = header.index("GENDER")
@@ -106,6 +108,7 @@ def _process_respondent_csv_data_header(header: list[str]):
     except ValueError:
         gender_i = None
         genders_to_match_with_i = None
+        print("No 'GENDER' or 'GENDERS_TO_MATCH_WITH' headers found. Initing data without genders.")
 
     # get any GROUP headings (the heading's format is "GROUP|XXX")
     group_codes_i = _get_group_indexes_from_csv_header(header)
@@ -113,13 +116,15 @@ def _process_respondent_csv_data_header(header: list[str]):
     # get the question data
     questions_data_i = _get_question_data_from_csv_header(header)
 
-    return _HeaderIndexes(full_name_i, gender_i, genders_to_match_with_i, group_codes_i, questions_data_i)
+    return _HeaderIndexes(full_name_i, email_i, gender_i, genders_to_match_with_i, group_codes_i, questions_data_i)
 
 
-def _get_respondent_from_row(row: list[str], row_i: int, h_indexes: _HeaderIndexes, multi_delimiter: str):
+def _get_respondent_from_row(row: list[str], row_i: int, h_indexes: _HeaderIndexes, multi_delimiter: str, row_csv: str):
     try:
         # full name
-        full_name = row[h_indexes.full_name]
+        full_name = row[h_indexes.full_name].strip().lstrip()
+        # email
+        email = row[h_indexes.email] if h_indexes.email != None else None
 
         # gender (if specified is added, if not then matching without gender selections)
         if h_indexes.gender is not None:
@@ -157,7 +162,7 @@ def _get_respondent_from_row(row: list[str], row_i: int, h_indexes: _HeaderIndex
         raise ValueError(f"Respondent data row (at index: {row_i}) is incorrectly formatted: {e}")
 
     # create respondent
-    return Respondent(row_i, full_name, groups, gender, genders_to_match_with, responses)
+    return Respondent(row_i, full_name, email, groups, gender, genders_to_match_with, responses, row_csv)
 
 
 def read_data_from_csv(
@@ -187,7 +192,7 @@ def read_data_from_csv(
         questions_data = list(h_indexes.question_data_columns.values())
         # process each respondent and use row index as the respondent's id
         for row_i, row in enumerate(csv_reader):
-            respondent = _get_respondent_from_row(row, row_i, h_indexes, multi_delimiter)
+            respondent = _get_respondent_from_row(row, row_i, h_indexes, multi_delimiter, delimiter.join(row))
             all_respondents.append(respondent)
 
     # inject all_matches_group_data to be a group for all respondents

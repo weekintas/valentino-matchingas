@@ -1,3 +1,6 @@
+DATABASE_PATH = "data/database.db"
+
+
 ###############################
 #   CSV DATA FILE CONSTANTS   #
 ###############################
@@ -14,7 +17,7 @@ HEADER_GROUP_PREFIX = "GROUP"
 
 # Other csv data file constants
 CSV_DATA_DEFAULT_DELIMITER = ","
-CSV_DATA_DEFAULT_MC_DELIMITER = ";"
+CSV_DATA_DEFAULT_MULTI_DELIMITER = ";"
 """The delimiter which separates multiple options chosen in a single question rather than separating different questions
 like `CSV_DATA_DEFAULT_DELIMITER` does"""
 CSV_DATA_PARAMETER_DELIMITER = "|"
@@ -47,6 +50,7 @@ DEFAULT_RESULTS_PRECISION: int = 0
 ALL_PARTICIPANTS_GROUP_TITLE = "Tarp visų dalyvių"
 PDF_RESULTS_TEMPLATE_RELATIVE_PATH = "pdf_results/valentine/valentine_pink_pdf.html"
 EMAIL_TEMPLATE_RELATIVE_PATH = "email/valentine/valentine_pink_email.html"
+PNG_RESULTS_TEMPLATE_RELATIVE_PATH = "png_results/valentine/valentine_pink_png.html"
 
 
 #####################

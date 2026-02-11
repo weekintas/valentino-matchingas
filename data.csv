@@ -1,9 +1,0 @@
-FULL_NAME,                    GROUP|klase, GROUP|laida, GENDER, GENDERS_TO_MATCH_WITH, YN,   SC|3,           SC|5,           MC|5,                                                  RT|10
-Vykintas Mylimas,             2a,          10,          MALE,   "MALE;FEMALE",         Yep,  Group Study,    Night,          "Homework;Science projects",                           6
-Guoda Baldauskaitė,           2a,          10,          FEMALE, "MALE;FEMALE",         Nope, Group Study,    Late Afternoon, "Essay writing;Homework;Test preparation",             9
-Joris Kaznauskis,             2a,          10,          MALE,   "MALE;FEMALE",         Yep,  Mixed Approach, Afternoon,      "Homework;Test preparation;Note taking;Essay writing", 10
-Giedrė Martinkutė,            2b,          10,          FEMALE, "MALE;FEMALE",         Yep,  Group Study,    Morning,        Science projects,                                      7
-Viktorija Marija-Jokubaitytė, 2b,          10,          FEMALE, "MALE;FEMALE",         Nope, Solo Study,     Evening,        "Essay writing;Note taking",                           4
-Ugnė Tvaronavičiūtė,          1c,          9,           FEMALE, "MALE;FEMALE",         Yep,  Mixed Approach, Afternoon,      "Essay writing;Homework;Science projects",             6
-Kasparas Trakšelys,           1c,          9,           MALE,   "MALE;FEMALE",         Nope, Solo Study,     Late Afternoon, "Homework;Test preparation",                           2
-Ieva Valančiūtė,              1a,          9,           FEMALE, "MALE;FEMALE",         Yep,  Group Study,    Night,          "Note taking;Test preparation",                        8

@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 
-from classes.gender import Gender
+from utils.classes.gender import Gender
 
 
 @dataclass(frozen=True)
@@ -14,10 +14,12 @@ class Respondent:
 
     id: int
     full_name: str
+    email: str
     groups: dict[str, str]
     gender: Gender
     match_genders: list[Gender]
     responses: dict[int, int | str | set]
+    csv_data_row: str | None = None
 
     def __eq__(self, other: "Respondent"):
         if not isinstance(other, Respondent):

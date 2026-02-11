@@ -1,11 +1,16 @@
 from enum import Enum
 
-from utils.constants import EMAIL_TEMPLATE_RELATIVE_PATH, PDF_RESULTS_TEMPLATE_RELATIVE_PATH
+from utils.constants import (
+    EMAIL_TEMPLATE_RELATIVE_PATH,
+    PDF_RESULTS_TEMPLATE_RELATIVE_PATH,
+    PNG_RESULTS_TEMPLATE_RELATIVE_PATH,
+)
 
 
 class ResultFileType(Enum):
     PDF = "pdf"
     EMAIL = "email"
+    PNG = "png"
 
     @classmethod
     def from_string(cls, value: str):
@@ -29,6 +34,8 @@ class ResultFileType(Enum):
                 return PDF_RESULTS_TEMPLATE_RELATIVE_PATH
             case ResultFileType.EMAIL:
                 return EMAIL_TEMPLATE_RELATIVE_PATH
+            case ResultFileType.PNG:
+                return PNG_RESULTS_TEMPLATE_RELATIVE_PATH
 
     def get_result_file_extension(self):
         match self:
@@ -36,3 +43,14 @@ class ResultFileType(Enum):
                 return "pdf"
             case ResultFileType.EMAIL:
                 return "html"
+            case ResultFileType.PNG:
+                return "png"
+
+    def to_sql_type_str(self):
+        match self:
+            case ResultFileType.EMAIL:
+                return "RESULTS_EMAIL"
+            case ResultFileType.PDF:
+                return "RESULTS_PDF"
+            case ResultFileType.PNG:
+                return "RESULTS_PNG"

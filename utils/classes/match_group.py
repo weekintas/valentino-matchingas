@@ -2,7 +2,7 @@ from dataclasses import dataclass
 from typing import Callable, TYPE_CHECKING, Any, TypeAlias
 
 if TYPE_CHECKING:
-    from classes.respondent import Respondent
+    from utils.classes.respondent import Respondent
 
 
 _MatchGroupGeneralCallable: TypeAlias = Callable[[list["MatchGroup"], "Respondent"], Any]

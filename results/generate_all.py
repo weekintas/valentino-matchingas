@@ -1,11 +1,11 @@
 from collections import defaultdict
 from dataclasses import replace
 
-from classes.match_group import MatchGroup
-from classes.match_table import MatchTable
-from classes.matchmaking_config import MatchmakingConfig
-from classes.respondent import Respondent
-from classes.result_file_type import ResultFileType
+from utils.classes.match_group import MatchGroup
+from utils.classes.match_table import MatchTable
+from utils.classes.matchmaking_config import MatchmakingConfig
+from utils.classes.respondent import Respondent
+from utils.classes.result_file_type import ResultFileType
 from results.class_match_group_results import MatchGroupResults, MatchResult
 from results.generate_result_file import generate_result_file
 from results.result_filepath import get_respondent_result_file_path
@@ -18,7 +18,7 @@ def generate_result_files(
     file_types: list[ResultFileType],
     config: MatchmakingConfig,
     verbose: bool = True,
-) -> None:
+) -> list[tuple[ResultFileType, str, Respondent]]:
     """
     Parameters:
         file_type (str): either `ResultFileType.PDF` or `ResultFileType.EMAIL`, or both in a list
@@ -28,6 +28,7 @@ def generate_result_files(
     # count how many of each file type we generated for printing if verbose
     # (defaultdict so no need to check if f_type exists as key when incrementing)
     generated_file_counts: dict[str, int] = defaultdict(int)
+    generated_file_paths: list[tuple[ResultFileType, str, Respondent]] = []
 
     for respondent in all_respondents:
         match_groups = get_respondent_match_groups_for_template(
@@ -43,7 +44,7 @@ def generate_result_files(
                 config.separate_result_files_by_groups,
             )
 
-            was_file_generated = generate_result_file(
+            filepath = generate_result_file(
                 respondent,
                 match_groups,
                 top_match,
@@ -54,12 +55,15 @@ def generate_result_files(
                 print_generated_message=False,
             )
             # if file was successfully generated, add it to the count for display
-            if was_file_generated:
+            if filepath:
                 generated_file_counts[f_type] += 1
+                generated_file_paths.append((f_type, filepath, respondent))
 
     if verbose:
         file_type_strings = [f"{f_count} {f_type}" for f_type, f_count in generated_file_counts.items()]
         print(f"Generated {', '.join(file_type_strings)} result files for {len(all_respondents)} respondents!")
+
+    return generated_file_paths
 
 
 def get_respondent_match_groups_for_template(
@@ -87,6 +91,10 @@ def get_respondent_match_groups_for_template(
         match_group_results = _get_match_group_results(
             respondent, match_table, match_groups_data, matches_in_group, match_group
         )
+
+        # if has no results in it and should not be displayed when empty, do not append to the list of match groups
+        if not match_group.visible_when_empty and len(match_group_results) == 0:
+            continue
 
         # everything is done, ready to create the object
         unordered_match_groups_for_template.append(
@@ -127,6 +135,10 @@ def _get_matches_in_match_groups(respondent: Respondent, matches: list[Responden
     matches_in_groups: dict[str, list[Respondent]] = {}
 
     for group_code, value in respondent.groups.items():
+        # TODO: Implement NO_RESPONSE
+        if value == "NO_RESPONSE":
+            continue
+
         matches_in_groups[group_code] = []
         for match in matches:
             if match.groups.get(group_code) == value:

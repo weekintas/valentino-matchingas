@@ -4,7 +4,7 @@ import sys
 from utils.constants import (
     CLI_DEFAULT_MAX_RESULTS_IN_GROUP,
     CSV_DATA_DEFAULT_DELIMITER,
-    CSV_DATA_DEFAULT_MC_DELIMITER,
+    CSV_DATA_DEFAULT_MULTI_DELIMITER,
     DEFAULT_RESULTS_PRECISION,
 )
 
@@ -76,7 +76,7 @@ def get_parser():
     )
     PARSER.add_argument(
         "--multi-delimiter",
-        default=CSV_DATA_DEFAULT_MC_DELIMITER,
+        default=CSV_DATA_DEFAULT_MULTI_DELIMITER,
         metavar="CHAR",
         help='Delimiter character for the CSV file (default: "%(default)s") which separates multiple options in a single cell',
     )

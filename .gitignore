@@ -5,6 +5,8 @@ __pycache__/
 .aws/
 out/
 .vscode/
+__input/
+data/database.db
 
 # C extensions
 *.so

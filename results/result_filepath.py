@@ -1,4 +1,4 @@
-from classes.respondent import Respondent
+from utils.classes.respondent import Respondent
 
 
 def _get_respondent_result_file_filename(respondent: Respondent, extension: str):

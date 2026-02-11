@@ -1,13 +1,12 @@
-from typing import Any
-
 import pdfkit
+import imgkit
 
-from classes.matchmaking_config import MatchmakingConfig
-from classes.respondent import Respondent
-from classes.result_file_type import ResultFileType
+from utils.classes.matchmaking_config import MatchmakingConfig
+from utils.classes.respondent import Respondent
+from utils.classes.result_file_type import ResultFileType
 from results.class_match_group_results import MatchGroupResults, MatchResult
 from results.generate_html_content import get_result_file_html_content
-from utils.filesystem import make_parent_dirs_for_file, get_file_extension
+from utils.filesystem import make_parent_dirs_for_file
 
 
 def _generate_html_result_file(result_file_path: str, file_html_content: str) -> bool:
@@ -26,9 +25,11 @@ _PDFKIT_OPTIONS = {
     "encoding": "UTF-8",
     "margin-top": "1cm",
     "margin-right": "1cm",
-    "margin-bottom": "1cm",
+    "margin-bottom": "0cm",
     "margin-left": "1cm",
 }
+
+_IMGKIT_OPTIONS = {"quality": 80, "width": 1024, "log-level": "error"}
 
 
 def _generate_pdf_result_file(result_file_path: str, file_html_content: str) -> bool:
@@ -37,6 +38,17 @@ def _generate_pdf_result_file(result_file_path: str, file_html_content: str) -> 
         pdfkit.from_string(file_html_content, result_file_path, options=_PDFKIT_OPTIONS)
     except Exception as e:
         print(f"Failed to generate pdf results file '{result_file_path}': {e}")
+        return False
+
+    return True
+
+
+def _generate_png_result_file(result_file_path: str, file_html_content: str) -> bool:
+    """Returns bool whether file generation succeeded"""
+    try:
+        imgkit.from_string(file_html_content, result_file_path, options=_IMGKIT_OPTIONS)
+    except Exception as e:
+        print(f"Failed to generate png results file '{result_file_path}': {e}")
         return False
 
     return True
@@ -63,7 +75,9 @@ def generate_result_file(
     """
 
     if print_generating_message:
-        print(f"Generating {file_type} results file: {result_file_path}")
+        print(
+            f"Generating {file_type}{" " if file_type == ResultFileType.EMAIL else "   "}results file: {result_file_path}"
+        )
 
     # get html content of file
     result_file_html_content = get_result_file_html_content(
@@ -81,10 +95,14 @@ def generate_result_file(
         was_file_generated = _generate_html_result_file(result_file_path, result_file_html_content)
     elif result_file_extension == "pdf":
         was_file_generated = _generate_pdf_result_file(result_file_path, result_file_html_content)
+    elif result_file_extension == "png":
+        was_file_generated = _generate_png_result_file(result_file_path, result_file_html_content)
     else:
         raise ValueError(f"Invalid file_type result file extension: {result_file_extension}")
 
     if print_generated_message and was_file_generated:
-        print(f"Generated {file_type} results file: {result_file_path}")
+        print(
+            f"Generated  {file_type}{"   " if file_type == ResultFileType.PDF else " "}results file: {result_file_path}"
+        )
 
     return result_file_path if was_file_generated else None

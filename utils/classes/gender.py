@@ -25,6 +25,15 @@ class Gender(Enum):
             "OTHER": cls.OTHER,
             "UNSPECIFIED": cls.UNSPECIFIED,
             "NONE": cls.UNSPECIFIED,
+            "VYRAS": cls.MALE,
+            "VAIKINAS": cls.MALE,
+            "MOTERIS": cls.FEMALE,
+            "MERGINA": cls.FEMALE,
+            "KITA": cls.OTHER,
+            "NENORIU SAKYTI": cls.OTHER,
+            "KITA / NENORIU SAKYTI": cls.OTHER,
+            "NENURODYTA": cls.UNSPECIFIED,
+            "NIEKO": cls.UNSPECIFIED,
         }
 
         try:

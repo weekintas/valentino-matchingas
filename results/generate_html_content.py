@@ -1,7 +1,7 @@
-from classes.matchmaking_config import MatchmakingConfig
-from classes.respondent import Respondent
-from classes.gender import Gender
-from classes.result_file_type import ResultFileType
+from utils.classes.matchmaking_config import MatchmakingConfig
+from utils.classes.respondent import Respondent
+from utils.classes.gender import Gender
+from utils.classes.result_file_type import ResultFileType
 from results.class_match_group_results import MatchGroupResults, MatchResult
 from utils.jinja import JINJA_ENV
 from utils.string import fullname_to_lithuanian_genitive_case, fullname_to_lithuanian_vocative_case

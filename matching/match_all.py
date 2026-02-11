@@ -1,6 +1,6 @@
-from classes.match_table import MatchTable
-from classes.question_data import QuestionData, QuestionType
-from classes.respondent import Respondent
+from utils.classes.match_table import MatchTable
+from utils.classes.question_data import QuestionData, QuestionType
+from utils.classes.respondent import Respondent
 
 
 def _calc_points_yn_or_sc(r1, r2, qd: QuestionData):
